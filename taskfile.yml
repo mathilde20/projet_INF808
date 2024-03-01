@@ -1,0 +1,10 @@
+---
+version: "3"
+
+tasks:
+  generate-single-node-certs:
+    cmds:
+      - docker-compose -f generate-indexer-certs.yml run --rm generator-single-node
+  start-single-node:
+    cmds:
+      - docker-compose -f single-node.yml up
