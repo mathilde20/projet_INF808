@@ -24,4 +24,7 @@ task start-single-node
 
 ### 3. Access the Wazuh dashboard
 
-- Open your web browser and go to [https://localhost:80/app/wazuh](https://localhost:80/app/wazuh)
+- Open your web browser and go to [https://localhost/app/wazuh](https://localhost/app/wazuh)
+- The default credentials are:
+  - Username: `kibanaserver`
+  - Password: `kibanaserver`
