@@ -1,10 +1,49 @@
 ---
 version: "3"
 
+env:
+  COMPOSE_ALL_FILES: -f docker-compose.yml -f docker-compose.logs.yml
+  COMPOSE_LOGGING: -f docker-compose.yml -f docker-compose.logs.yml
+  ELK_SERVICES: elasticsearch logstash kibana apm-server
+  ELK_LOG_COLLECTION: filebeat
+
 tasks:
-  generate-single-node-certs:
+  keystore:
+    silent: true
+    internal: true
     cmds:
-      - docker-compose -f generate-indexer-certs.yml run --rm generator-single-node
-  start-single-node:
+      - docker compose -f docker-compose.setup.yml run --rm keystore
+  certs:
+    silent: true
+    internal: true
     cmds:
-      - docker-compose -f single-node.yml up
+      - docker compose -f docker-compose.setup.yml run --rm certs
+
+  setup:
+    silent: true
+    cmds:
+      - task: keystore
+      - task: certs
+
+  elk:
+    silent: true
+    cmds:
+      - docker compose up -d --build
+
+  monitoring:
+    silent: true
+    cmds:
+      - docker compose ${COMPOSE_LOGGING} up -d --build ${ELK_LOG_COLLECTION}
+
+  up:
+    silent: true
+    cmds:
+      - task: elk
+      - task: monitoring
+      - >
+        echo "Visit Kibana: https://localhost:5601"
+
+  down:
+    silent: true
+    cmds:
+      - docker compose ${COMPOSE_ALL_FILES} down
