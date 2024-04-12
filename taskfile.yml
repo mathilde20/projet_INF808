@@ -35,9 +35,16 @@ tasks:
     cmds:
       - docker compose ${COMPOSE_LOGGING} up -d --build ${ELK_LOG_COLLECTION}
 
+  windows: 
+    silent: true
+    platforms: [windows]
+    cmds:
+      - wsl -d docker-desktop sysctl -w vm.max_map_count=262144 
+
   up:
     silent: true
-    cmds:
+    cmds: 
+      - task: windows 
       - task: elk
       - task: monitoring
       - >
