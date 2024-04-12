@@ -29,3 +29,11 @@ task up
 - The default credentials are:
   - Username: `elastic`
   - Password: `changeme`
+
+### 4. Stop the containers
+
+- Run the following command in the root directory of the project:
+
+```bash
+task down
+```
