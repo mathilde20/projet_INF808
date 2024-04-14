@@ -1,0 +1,42 @@
+---
+networks:
+  dvwa:
+    name: dvwa
+
+volumes:
+  dvwa:
+
+services:
+  dvwa-app:
+    image: ghcr.io/digininja/dvwa:latest
+    hostname: dvwa-app
+    restart: always
+    environment:
+      - DB_SERVER=db-dvwa
+    ports:
+      - 4280:80
+    depends_on:
+      - dvwa-db
+    networks:
+      - dvwa
+
+  dvwa-db:
+    image: docker.io/library/mariadb:10
+    environment:
+      - MYSQL_ROOT_PASSWORD=dvwa
+      - MYSQL_DATABASE=dvwa
+      - MYSQL_USER=dvwa
+      - MYSQL_PASSWORD=p@ssw0rd
+    volumes:
+      - dvwa:/var/lib/mysql
+    networks:
+      - dvwa
+    restart: unless-stopped
+
+  pings:
+    build:
+      context: script_atk/
+    container_name: pings
+    command: /bin/bash /scripts/ping.sh 127.0.0.1
+    networks:
+      - dvwa

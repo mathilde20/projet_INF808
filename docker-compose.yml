@@ -6,12 +6,10 @@ networks:
     external: false
   dvwa:
     name: dvwa
-    
 
 # will contain all elasticsearch data.
 volumes:
   elasticsearch-data:
-  dvwa: 
 
 secrets:
   elasticsearch.keystore:
@@ -161,32 +159,3 @@ services:
         target: /certs/apm-server.crt
       - source: apm-server.key
         target: /certs/apm-server.key
-        
-  dvwa-app:
-    image: ghcr.io/digininja/dvwa:latest
-    hostname: dvwa-app
-    restart: always
-    environment:
-      - DB_SERVER=db-dvwa
-    ports:
-      - 4280:80
-    depends_on:
-      - db-dvwa
-    networks:
-      - dvwa
-
-  
-  db-dvwa:
-   image: docker.io/library/mariadb:10
-   environment:
-     - MYSQL_ROOT_PASSWORD=dvwa
-     - MYSQL_DATABASE=dvwa
-     - MYSQL_USER=dvwa
-     - MYSQL_PASSWORD=p@ssw0rd
-   volumes:
-     - dvwa:/var/lib/mysql
-   networks:
-     - dvwa
-   restart: unless-stopped
-
-

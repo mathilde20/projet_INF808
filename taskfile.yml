@@ -2,10 +2,12 @@
 version: "3"
 
 env:
-  COMPOSE_ALL_FILES: -f docker-compose.yml -f docker-compose.logs.yml
+  COMPOSE_ALL_FILES: -f docker-compose.yml -f docker-compose.logs.yml -f docker-compose.atk.yml
   COMPOSE_LOGGING: -f docker-compose.yml -f docker-compose.logs.yml
+  COMPOSE_ATTACK: -f docker-compose.yml -f docker-compose.atk.yml
   ELK_SERVICES: elasticsearch logstash kibana apm-server
   ELK_LOG_COLLECTION: filebeat
+  ATTACK_SERVICES: dvwa-app dvwa-db pings
 
 tasks:
   keystore:
@@ -35,16 +37,21 @@ tasks:
     cmds:
       - docker compose ${COMPOSE_LOGGING} up -d --build ${ELK_LOG_COLLECTION}
 
-  windows: 
+  windows:
     silent: true
     platforms: [windows]
     cmds:
-      - wsl -d docker-desktop sysctl -w vm.max_map_count=262144 
+      - wsl -d docker-desktop sysctl -w vm.max_map_count=262144
+
+  attack:
+    silent: true
+    cmds:
+      - docker compose ${COMPOSE_ATTACK} up -d --build ${ATTACK_SERVICES}
 
   up:
     silent: true
-    cmds: 
-      - task: windows 
+    cmds:
+      - task: windows
       - task: elk
       - task: monitoring
       - >
