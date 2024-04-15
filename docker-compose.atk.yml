@@ -12,7 +12,7 @@ services:
     hostname: dvwa-app
     restart: always
     environment:
-      - DB_SERVER=db-dvwa
+      - DB_SERVER=dvwa-db
     ports:
       - 4280:80
     depends_on:
@@ -37,6 +37,38 @@ services:
     build:
       context: script_atk/
     container_name: pings
-    command: /bin/bash /scripts/ping.sh 127.0.0.1
+    depends_on:
+      - dvwa-app
+    command: /bin/bash /scripts/ping.sh dvwa-app
+    networks:
+      - dvwa
+
+  portscanning:
+    build:
+      context: script_atk/
+    container_name: portscanning
+    depends_on:
+      - dvwa-app
+    command: /bin/bash /scripts/portscanning.sh dvwa-app
+    networks:
+      - dvwa
+
+  bruteforce:
+    build:
+      context: script_atk/
+    container_name: bruteforce
+    depends_on:
+      - dvwa-app
+    command: /bin/bash /scripts/bruteforce.sh dvwa-app username.txt rockyou.txt
+    networks:
+      - dvwa
+
+  webcrawling:
+    build:
+      context: script_atk/
+    container_name: webcrawling
+    depends_on:
+      - dvwa-app
+    command: /bin/bash /scripts/webcrawling.sh dvwa-app common.txt
     networks:
       - dvwa
