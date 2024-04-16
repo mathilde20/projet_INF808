@@ -21,8 +21,8 @@ task up
 
 - The first time you run the project, it will take a few minutes to download the necessary Docker images.
 - You only have to run the `task setup` command once. It will generate the necessary certificates for the ELK cluster.
-- If you don't want to run the filebeat loging module you can replace the `task up` command with the `task elk` command. It will start the ELK stack without the filebeat module.
 - The command `task up` will launch the ELK stack with the filebeat and metricbeat modules. It will also launch a dvwa container to generate logs and metrics.
+- If you don't want to run the monitoring modules you can replace the `task up` command with the `task elk` command. It will start the ELK stack without the monitoring modules (e.g filebeat, metricbeat, ...). You can then launch the monitoring modules manually by running the `task monitoring` command. You can also launch the DVWA containers by running the `task dvwa` command.
 
 ### 3. Access the Kibana dashboard
 
