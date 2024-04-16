@@ -9,7 +9,6 @@ volumes:
 services:
   dvwa-app:
     image: ghcr.io/digininja/dvwa:latest
-    hostname: dvwa-app
     restart: always
     environment:
       - DB_SERVER=dvwa-db
