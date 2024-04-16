@@ -1,0 +1,31 @@
+---
+volumes:
+  metricbeat:
+
+networks:
+  default:
+    name: elastic
+    external: true
+
+services:
+  # Docker Metrics Shipper ------------------------------
+  metricbeat:
+    image: docker.elastic.co/beats/metricbeat:${ELK_VERSION}
+    user: root
+    environment:
+      ELASTIC_USERNAME: ${ELASTIC_USERNAME}
+      ELASTIC_PASSWORD: ${ELASTIC_PASSWORD}
+      KIBANA_HOST_PORT: ${KIBANA_HOST}:${KIBANA_PORT}
+      ELASTICSEARCH_HOST_PORT: https://${ELASTICSEARCH_HOST}:${ELASTICSEARCH_PORT}
+    # The commented sections below enable Metricbeat to monitor the Docker host,
+    # rather than the Metricbeat container. It's problematic with Docker for
+    # Windows, however, since "/proc", "/sys", etc. don't exist on Windows.
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /proc:/hostfs/proc:ro
+      - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
+      - /:/hostfs:ro
+      - metricbeat:/usr/share/metricbeat/data
+      # Provide a custom Metricbeat configuration
+      - ./metricbeat/metricbeat.docker.yml:/usr/share/metricbeat/metricbeat.yml
+    command: ["-e", "--strict.perms=false", "-system.hostfs=/hostfs"]

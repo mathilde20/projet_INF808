@@ -72,3 +72,7 @@ services:
     command: /bin/bash /scripts/webcrawling.sh dvwa-app common.txt
     networks:
       - dvwa
+
+  glouton:
+    build:
+      context: glouton/

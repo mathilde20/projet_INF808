@@ -3,6 +3,11 @@
 volumes:
   filebeat-data:
 
+networks:
+  default:
+    name: elastic
+    external: true
+
 services:
   # Docker Logs Shipper ------------------------------
   filebeat:

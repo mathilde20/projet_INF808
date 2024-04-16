@@ -2,13 +2,14 @@
 version: "3"
 
 env:
-  COMPOSE_ALL_FILES: -f docker-compose.yml -f docker-compose.logs.yml -f docker-compose.atk.yml
+  COMPOSE_ALL_FILES: -f docker-compose.yml -f docker-compose.logs.yml -f docker-compose.atk.yml -f docker-compose.metrics.yml
   COMPOSE_LOGGING: -f docker-compose.yml -f docker-compose.logs.yml
+  COMPOSE_METRICS: -f docker-compose.yml -f docker-compose.metrics.yml
   COMPOSE_ATTACK: -f docker-compose.yml -f docker-compose.atk.yml
   ELK_SERVICES: elasticsearch logstash kibana apm-server
   ELK_LOG_COLLECTION: filebeat
+  ELK_METRICS_COLLECTION: metricbeat
   DVWA_SERVICES: dvwa-app dvwa-db
-  ATTACK_SERVICES: pings portscanning webcrawling bruteforce
 
 tasks:
   keystore:
@@ -37,6 +38,7 @@ tasks:
     silent: true
     cmds:
       - docker compose ${COMPOSE_LOGGING} up -d --build ${ELK_LOG_COLLECTION}
+      - docker compose ${COMPOSE_METRICS} up -d --build ${ELK_METRICS_COLLECTION}
 
   windows:
     silent: true
@@ -49,10 +51,30 @@ tasks:
     cmds:
       - docker compose ${COMPOSE_ATTACK} up -d --build ${DVWA_SERVICES}
 
-  attack:
+  bruteforce:
     silent: true
     cmds:
-      - docker compose ${COMPOSE_ATTACK} up -d --build ${ATTACK_SERVICES}
+      - docker compose ${COMPOSE_ATTACK} up -d --build bruteforce
+
+  portscanning:
+    silent: true
+    cmds:
+      - docker compose ${COMPOSE_ATTACK} up -d --build portscanning
+
+  pings:
+    silent: true
+    cmds:
+      - docker compose ${COMPOSE_ATTACK} up -d --build pings
+
+  webcrawling:
+    silent: true
+    cmds:
+      - docker compose ${COMPOSE_ATTACK} up -d --build webcrawling
+
+  glouton:
+    silent: true
+    cmds:
+      - docker compose ${COMPOSE_ATTACK} up -d --build glouton
 
   up:
     silent: true
